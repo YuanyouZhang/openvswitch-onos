@@ -1,0 +1,19 @@
+name: openvswitch-onos
+subordinate: true
+maintainer: 
+summary: "Open vSwitch ONOS subordinate charm"
+description: Open vSwitch ONOS subordinate charm 
+tags:
+  - openstack
+provides:
+  neutron-plugin:
+    interface: neutron-plugin
+    scope: container
+requires:
+  ovsdb-manager:
+    interface: ovsdb-manager
+  controller-api:
+    interface: onos-controller-api
+  container:
+    interface: juju-info
+    scope: container
