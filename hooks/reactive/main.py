@@ -32,11 +32,11 @@ def configure_openvswitch(onos_ovsdb):
     if db.get('installed') and onos_ovsdb.connection_string():
         log("Configuring OpenvSwitch with ONOS controller: %s" %
             onos_ovsdb.connection_string())
-        log("onos prepare compute br-ex,onos_port1,onos_port2.")
-        ports = config('ext-port')
-        print 'external port is ' + ports
-        shutil.copy("files/onos_pre.sh", "/")
-        check_call("sh /onos_pre.sh " + ports,shell=True)
+       # log("onos prepare compute br-ex,onos_port1,onos_port2.")
+       # ports = config('ext-port')
+       # print 'external port is ' + ports
+       # shutil.copy("files/onos_pre.sh", "/")
+       # check_call("sh /onos_pre.sh " + ports,shell=True)
         local_ip = get_address_in_network(config('os-data-network'),
                                           unit_private_ip())
         ovs.set_manager(onos_ovsdb.connection_string())
