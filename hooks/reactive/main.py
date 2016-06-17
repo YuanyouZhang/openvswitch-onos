@@ -1,14 +1,9 @@
 import subprocess
 
-from socket import gethostname
-
 import lib.ovs as ovs
 
-from charmhelpers.contrib.network.ip import get_address_in_network
-from charmhelpers.core.hookenv import config
 from charmhelpers.core.hookenv import log
 from charmhelpers.core.hookenv import status_set
-from charmhelpers.core.hookenv import unit_private_ip
 from charmhelpers.core.reactive import hook
 from charmhelpers.core.reactive import when
 from charmhelpers.core.reactive import when_not
@@ -17,8 +12,6 @@ from charmhelpers.core.unitdata import kv
 from charmhelpers.fetch import apt_install
 from charmhelpers.fetch import apt_purge
 from charmhelpers.fetch import filter_installed_packages
-from subprocess import check_call
-import shutil
 
 # Packages to install/remove
 PACKAGES = ['openvswitch-switch']
@@ -32,13 +25,6 @@ def configure_openvswitch(onos_ovsdb):
     if db.get('installed') and onos_ovsdb.connection_string():
         log("Configuring OpenvSwitch with ONOS controller: %s" %
             onos_ovsdb.connection_string())
-       # log("onos prepare compute br-ex,onos_port1,onos_port2.")
-       # ports = config('ext-port')
-       # print 'external port is ' + ports
-       # shutil.copy("files/onos_pre.sh", "/")
-       # check_call("sh /onos_pre.sh " + ports,shell=True)
-        local_ip = get_address_in_network(config('os-data-network'),
-                                          unit_private_ip())
         ovs.set_manager(onos_ovsdb.connection_string())
         status_set('active', 'Open vSwitch configured and ready')
 
@@ -102,5 +88,3 @@ def uninstall_packages():
         status_set('maintenance', 'Purging packages')
         apt_purge(PACKAGES)
         db.unset('installed')
-
-

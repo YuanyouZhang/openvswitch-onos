@@ -1,6 +1,6 @@
 name: openvswitch-onos
 subordinate: true
-maintainer: 
+maintainer: onos 
 summary: "Open vSwitch ONOS subordinate charm"
 description: Open vSwitch ONOS subordinate charm 
 tags:
