@@ -2,6 +2,7 @@ import subprocess
 
 import lib.ovs as ovs
 
+from charmhelpers.core.hookenv import config
 from charmhelpers.core.hookenv import log
 from charmhelpers.core.hookenv import status_set
 from charmhelpers.core.reactive import hook
@@ -12,9 +13,13 @@ from charmhelpers.core.unitdata import kv
 from charmhelpers.fetch import apt_install
 from charmhelpers.fetch import apt_purge
 from charmhelpers.fetch import filter_installed_packages
+from subprocess import check_call
 
 # Packages to install/remove
 PACKAGES = ['openvswitch-switch']
+DEBPACKS = ['dkms', 'libc6-dev', 'make', 'kmod', 'netbase', 'procps',
+            'python-argparse', 'uuid-runtime', 'python:any', 'libssl1.0.0',
+            'linux-headers-3.16.0-71-generic']
 
 
 @when('ovsdb-manager.access.available')
@@ -77,7 +82,19 @@ def install_packages():
     db = kv()
     if not db.get('installed'):
         status_set('maintenance', 'Installing packages')
-        apt_install(filter_installed_packages(PACKAGES))
+        if config('profile') == 'onos-sfc':
+            apt_install(filter_installed_packages(DEBPACKS))
+            check_call("sudo wget http://205.177.226.237:9999/onosfw\
+                  /package_ovs_debian.tar.gz -O ovs.tar", shell=True)
+            check_call("sudo tar xvf ovs.tar", shell=True)
+            check_call("sudo dpkg -i openvswitch-common_2.5.90-1_amd64.deb",
+                       shell=True)
+            check_call("sudo dpkg -i openvswitch-datapath-dkms_\
+                       2.5.90-1_all.deb", shell=True)
+            check_call("sudo dpkg -i openvswitch-switch_2.5.90-1_amd64.deb",
+                       shell=True)
+        else:
+            apt_install(filter_installed_packages(PACKAGES))
         db.set('installed', True)
 
 

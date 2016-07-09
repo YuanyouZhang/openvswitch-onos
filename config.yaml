@@ -13,3 +13,8 @@ options:
     type: string
     description: |
       Map of physical nic mac address to configured VLAN's.
+  profile:
+    default:
+    type: string
+    description: |
+      If profile is onos-sfc,it will install nsh patch.
