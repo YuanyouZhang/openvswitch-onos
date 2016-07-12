@@ -85,12 +85,12 @@ def install_packages():
         if config('profile') == 'onos-sfc':
             apt_install(filter_installed_packages(DEBPACKS))
             check_call("sudo wget http://205.177.226.237:9999/onosfw\
-                  /package_ovs_debian.tar.gz -O ovs.tar", shell=True)
+/package_ovs_debian.tar.gz -O ovs.tar", shell=True)
             check_call("sudo tar xvf ovs.tar", shell=True)
             check_call("sudo dpkg -i openvswitch-common_2.5.90-1_amd64.deb",
                        shell=True)
             check_call("sudo dpkg -i openvswitch-datapath-dkms_\
-                       2.5.90-1_all.deb", shell=True)
+2.5.90-1_all.deb", shell=True)
             check_call("sudo dpkg -i openvswitch-switch_2.5.90-1_amd64.deb",
                        shell=True)
         else:
