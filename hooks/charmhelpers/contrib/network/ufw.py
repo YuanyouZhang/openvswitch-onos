@@ -1,18 +1,16 @@
 # Copyright 2014-2015 Canonical Limited.
 #
-# This file is part of charm-helpers.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# charm-helpers is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License version 3 as
-# published by the Free Software Foundation.
+#  http://www.apache.org/licenses/LICENSE-2.0
 #
-# charm-helpers is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with charm-helpers.  If not, see <http://www.gnu.org/licenses/>.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 """
 This module contains helpers to add and remove ufw rules.
@@ -40,7 +38,9 @@ Examples:
 import re
 import os
 import subprocess
+
 from charmhelpers.core import hookenv
+from charmhelpers.core.kernel import modprobe, is_module_loaded
 
 __author__ = "Felipe Reyes <felipe.reyes@canonical.com>"
 
@@ -82,14 +82,11 @@ def is_ipv6_ok(soft_fail=False):
     # do we have IPv6 in the machine?
     if os.path.isdir('/proc/sys/net/ipv6'):
         # is ip6tables kernel module loaded?
-        lsmod = subprocess.check_output(['lsmod'], universal_newlines=True)
-        matches = re.findall('^ip6_tables[ ]+', lsmod, re.M)
-        if len(matches) == 0:
+        if not is_module_loaded('ip6_tables'):
             # ip6tables support isn't complete, let's try to load it
             try:
-                subprocess.check_output(['modprobe', 'ip6_tables'],
-                                        universal_newlines=True)
-                # great, we could load the module
+                modprobe('ip6_tables')
+                # great, we can load the module
                 return True
             except subprocess.CalledProcessError as ex:
                 hookenv.log("Couldn't load ip6_tables module: %s" % ex.output,
